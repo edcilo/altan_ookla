@@ -1,0 +1,12 @@
+.env
+
+/**/node_modules
+/**/vendor
+/**/.idea
+
+/nifi/*
+/nifi_tmp/*
+/data_repository
+
+!/nifi/.gitkeep
+!/nifi_tmp/.gitkeep

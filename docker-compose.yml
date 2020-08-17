@@ -1,0 +1,58 @@
+version: "3.3"
+
+services:
+  ookla_psql_001:
+    image: postgres
+    container_name: ookla_psql
+    restart: always
+    ports:
+      - ${PSQL_PORT:-5432}:5432
+    volumes:
+      - psqlVolume:/var/lib/postgresql/data/
+      - ./psql/script.sql:/psql/script.sql
+    environment: 
+      POSTGRES_PASSWORD: ${PSQL_PSW:-secret}
+      POSTGRES_USER: ${PSQL_USER:-ookla}
+      POSTGRES_DB: ${PSQL_DB:-ookla}
+    networks: 
+      - ooklaNet
+  
+  ookla_maria_001:
+    image: mariadb
+    container_name: ookla_maria
+    restart: always
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    volumes:
+      - mysqlVolume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PSW:-secret}
+      MYSQL_DATABASE: ${MYSQL_DB:-ookla}
+      MYSQL_USER: ${MYSQL_USER:-ookla}
+      MYSQL_PASSWORD: ${MYSQL_PSW:-secret}
+    networks: 
+      - ooklaNet
+
+  ookla_nifi_001:
+    build: docker/nifi
+    container_name: ookla_nifi
+    restart: always
+    ports: 
+      - 8080:8080
+    volumes:
+      - ./nifi:/nifi_templates
+      - ./nifi_tmp:/nifi_tmp
+      - ./nifi_drivers:/nifi_drivers
+      - ${NFS_PATH}:/data_repository
+    networks: 
+      - ooklaNet
+
+
+networks:
+  ooklaNet:
+    driver: "bridge"
+
+
+volumes:
+  psqlVolume:
+  mysqlVolume:
