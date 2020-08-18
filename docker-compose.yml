@@ -38,12 +38,26 @@ services:
     container_name: ookla_nifi
     restart: always
     ports: 
-      - 8080:8080
+      - ${NIFI_PORT:-8080}:8080
     volumes:
       - ./nifi:/nifi_templates
       - ./nifi_tmp:/nifi_tmp
       - ./nifi_drivers:/nifi_drivers
       - ${NFS_PATH}:/data_repository
+    networks: 
+      - ooklaNet
+
+  ookla_phpadmin_001:
+    image: phpmyadmin/phpmyadmin
+    container_name: ookla_phpmyadmin
+    restart: always
+    ports:
+      - ${PHPMYADMIN_PORT:-8081}:80
+    volumes: 
+      - /sessions
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PSW:-secret}
+      PMA_HOST: ookla_maria_001
     networks: 
       - ooklaNet
 
