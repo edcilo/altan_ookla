@@ -43,6 +43,7 @@ services:
       - ./nifi:/nifi_templates
       - ./nifi_tmp:/nifi_tmp
       - ./nifi_drivers:/nifi_drivers
+      - ./nifi_conf:/nifi/nifi-1.11.4/conf/bootstrap.conf
       - ${NFS_PATH}:/data_repository
     networks: 
       - ooklaNet
